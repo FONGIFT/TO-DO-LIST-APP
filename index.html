@@ -1,105 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TaskMaster Pro | Productivity Suite</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TaskMaster Pro — To-Do + Calendar + Reminders</title>
 
-    <link rel="stylesheet" href="./style.css?V=3" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts + Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="./style.css?v=1" />
 </head>
-
 <body>
-    <!-- HEADER -->
-    <header class="main-header">
-        <div class="header-content">
-            <a href="#" class="logo">TaskMaster <span>Pro</span></a>
+  <header class="main-header">
+    <div class="header-inner">
+      <a class="logo" href="#">TaskMaster <span>Pro</span></a>
+      <nav class="nav">
+        <ul>
+          <li><button class="nav-link" data-target="list">Home</button></li>
+          <li><button class="nav-link" data-target="calendar">Calendar</button></li>
+          <li><button class="nav-link" data-target="history">History</button></li>
+          <li><a class="cta" href="#" id="getStarted">Get Started</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-            <nav>
-                <ul class="nav-links">
-                    <li><a class="nav-link" href="#">Home</a></li>
-                    <li><a class="nav-link" href="#" id="calendar-tab-link">Calendar</a></li>
-                    <li><a class="nav-link" href="#" id="history-tab-link">History</a></li>
-                    <li><a class="cta-btn" href="#">Get Started</a></li>
-                </ul>
-            </nav>
+  <main class="app-main">
+    <div class="container">
+
+      <!-- TABS -->
+      <div class="app-tabs">
+        <button class="tab btn-active" data-tab="list">Task List</button>
+        <button class="tab" data-tab="calendar">Calendar</button>
+        <button class="tab" data-tab="history">History</button>
+      </div>
+
+      <!-- TASK LIST -->
+      <section id="list" class="tab-content active">
+        <h2 class="section-heading">My Tasks</h2>
+
+        <form id="taskForm" class="input-panel" autocomplete="off">
+          <div class="col">
+            <input id="taskTitle" type="text" placeholder="Task title (required)" required />
+            <textarea id="taskDesc" placeholder="Description (optional)" rows="2"></textarea>
+          </div>
+
+          <div class="col smalls">
+            <label>
+              Due date
+              <input id="dueDate" type="date" />
+            </label>
+
+            <label>
+              Reminder time
+              <input id="remindTime" type="time" />
+            </label>
+
+            <label>
+              Reminder start
+              <input id="remindStart" type="date" />
+            </label>
+
+            <label>
+              Frequency
+              <select id="remindFreq">
+                <option value="none">None</option>
+                <option value="once">Once</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="col actions">
+            <button id="addTaskBtn" class="primary" type="submit"><i class="fa fa-plus"></i> Add Task</button>
+            <button id="clearFormBtn" type="button" class="muted">Clear</button>
+          </div>
+        </form>
+
+        <div class="task-list-wrap">
+          <ul id="taskList" class="task-list" aria-live="polite"></ul>
         </div>
-    </header>
 
-    <!-- MAIN APP -->
-    <main class="app-main">
-        <div class="container">
-            <!-- Tabs -->
-            <div class="app-tabs">
-                <button class="tab-button active" data-tab="list">Task List</button>
-                <button class="tab-button" data-tab="calendar">Calendar</button>
-                <button class="tab-button" data-tab="history">History</button>
-            </div>
+        <p class="note">Tasks are saved locally in your browser. Turn on notifications for reminders.</p>
+      </section>
 
-            <!-- Task List -->
-            <div id="list" class="tab-content active">
-                <h1>My Tasks</h1>
+      <!-- CALENDAR -->
+      <section id="calendar" class="tab-content">
+        <h2 class="section-heading">Calendar</h2>
 
-                <div class="input-box">
-                    <input type="text" id="taskInput" placeholder="Add a new task..." autofocus />
+        <div class="calendar-controls">
+          <div class="month-nav">
+            <button id="prevMonth"><i class="fa fa-chevron-left"></i></button>
+            <div id="currentMonthYear" class="month-title"></div>
+            <button id="nextMonth"><i class="fa fa-chevron-right"></i></button>
+          </div>
 
-                    <div class="date-remind-inputs">
-                        <input type="date" id="dueDateInput">
-                        <input type="time" id="dueTimeInput">
-                    </div>
-
-                    <button id="addBtn" class="primary-btn">Add</button>
-                </div>
-
-                <ul id="taskList" class="task-list"></ul>
-
-                <p class="app-footer-note">Your tasks are saved automatically.</p>
-            </div>
-
-            <!-- Calendar -->
-            <div id="calendar" class="tab-content">
-                <h1>Task Calendar</h1>
-
-                <div id="calendarView">
-                    <div class="calendar-header">
-                        <button id="prevMonth" class="circle-btn"><i class="fas fa-chevron-left"></i></button>
-                        <h2 id="currentMonthYear"></h2>
-                        <button id="nextMonth" class="circle-btn"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-
-                    <div id="calendarGrid" class="calendar-grid"></div>
-                </div>
-            </div>
-
-            <!-- History -->
-            <div id="history" class="tab-content">
-                <h1>Task History</h1>
-
-                <div class="history-filters">
-                    <button class="filter-button active" data-filter="pending">Pending</button>
-                    <button class="filter-button" data-filter="completed">Completed</button>
-                    <button class="filter-button" data-filter="deleted">Deleted</button>
-                </div>
-
-                <ul id="historyList" class="history-list"></ul>
-            </div>
+          <div class="jump-controls">
+            <label>Jump to month:
+              <input id="jumpMonth" type="month" />
+            </label>
+            <button id="todayBtn" class="muted">Today</button>
+          </div>
         </div>
-    </main>
 
-    <!-- FOOTER -->
-    <footer class="main-footer">
-        <p>© 2024 TaskMaster Solutions</p>
+        <div id="calendarGrid" class="calendar-grid"></div>
 
-        <div class="social-links">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <div id="dayTasks" class="day-tasks hidden">
+          <h3 id="dayTasksTitle"></h3>
+          <ul id="dayTaskList" class="task-list small"></ul>
+          <button id="closeDayTasks" class="muted">Close</button>
         </div>
-    </footer>
+      </section>
 
-    <script src="script.js"></script>
+      <!-- HISTORY -->
+      <section id="history" class="tab-content">
+        <h2 class="section-heading">History</h2>
+
+        <div class="history-controls">
+          <button class="filter active" data-filter="pending">Pending</button>
+          <button class="filter" data-filter="completed">Completed</button>
+          <button class="filter" data-filter="deleted">Deleted</button>
+        </div>
+
+        <ul id="historyList" class="task-list"></ul>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div>© <span id="year"></span> TaskMaster Solutions</div>
+    <div class="social">
+      <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+      <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+    </div>
+  </footer>
+
+  <script src="./script.js?v=1"></script>
 </body>
-
 </html>
