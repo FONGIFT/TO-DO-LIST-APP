@@ -1,286 +1,205 @@
-const taskInput = document.getElementById('taskInput');
-const dueDateInput = document.getElementById('dueDateInput');
-const dueTimeInput = document.getElementById('dueTimeInput');
-const addBtn = document.getElementById('addBtn');
-const taskList = document.getElementById('taskList');
-const historyList = document.getElementById('historyList');
+/* ------------------------------
+   TaskMaster Pro - style.css
+   Clean, modern, responsive
+   ------------------------------ */
 
-// Calendar DOM Elements
-const calendarView = document.getElementById('calendarView');
-const currentMonthYear = document.getElementById('currentMonthYear');
-const calendarGrid = document.getElementById('calendarGrid');
-const prevMonthBtn = document.getElementById('prevMonth');
-const nextMonthBtn = document.getElementById('nextMonth');
-
-// Global State
-let deletedTasks = JSON.parse(localStorage.getItem('deletedTasks') || '[]');
-let currentCalendarDate = new Date();
-
-// --- DATA MANAGEMENT ---
-
-// Save tasks (now includes dueDate, dueTime, dateCreated)
-function saveTasks(tasksToSave = document.querySelectorAll('.task')) {
-    const tasks = [];
-    tasksToSave.forEach(taskEl => {
-        tasks.push({
-            id: taskEl.dataset.id || Date.now(), // Use existing ID or generate new
-            text: taskEl.querySelector('span').textContent,
-            completed: taskEl.classList.contains('completed'),
-            dueDate: taskEl.dataset.dueDate || '',
-            dueTime: taskEl.dataset.dueTime || '',
-            dateCreated: taskEl.dataset.dateCreated || new Date().toISOString()
-        });
-    });
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    renderCalendar(); // Rerender calendar to update task dates
+:root{
+  --bg-dark:#1e3c72;
+  --accent:#4a6cf7;
+  --muted:#7b859c;
+  --card:#ffffff;
+  --panel:#f8f9ff;
+  --danger:#f15b5b;
+  --success:#27ae60;
+  --glass: rgba(255,255,255,0.06);
+  --radius:12px;
+  --shadow: 0 10px 30px rgba(16,24,40,0.25);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 
-function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    tasks.forEach(task => addTaskToDOM(task));
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  color:#1f2937;
+  background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
-function saveDeletedTask(taskData) {
-    deletedTasks.push({
-        ...taskData,
-        dateDeleted: new Date().toISOString()
-    });
-    localStorage.setItem('deletedTasks', JSON.stringify(deletedTasks));
+/* Header */
+.main-header{
+  background: var(--bg-dark);
+  color:#fff;
+  padding:14px 20px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+.header-inner{
+  max-width:1100px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+.logo{font-weight:700; font-size:1.15rem; color:#fff; text-decoration:none}
+.logo span{color:#9ec0ff}
+
+/* Nav */
+.nav ul{list-style:none;display:flex;gap:14px;align-items:center;margin:0;padding:0}
+.nav-link{background:none;border:none;color:rgba(255,255,255,0.92);padding:8px 14px;border-radius:8px;cursor:pointer}
+.nav-link:hover{background:rgba(255,255,255,0.06)}
+.cta{background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:600}
+.cta:hover{background:#3a57d8}
+
+/* Main container */
+.app-main{
+  padding:38px 16px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  flex:1;
+}
+.container{
+  width:100%;
+  max-width:1100px;
+  background:transparent;
+  border-radius:var(--radius);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-// --- TASK LIST RENDERING ---
-
-// Add task to DOM (accepts a full task object now)
-function addTaskToDOM(task) {
-    const { id, text, completed, dueDate, dueTime, dateCreated } = task;
-
-    const li = document.createElement('li');
-    li.className = 'task';
-    li.dataset.id = id || Date.now();
-    li.dataset.dueDate = dueDate || '';
-    li.dataset.dueTime = dueTime || '';
-    li.dataset.dateCreated = dateCreated || new Date().toISOString();
-
-    if (completed) li.classList.add('completed');
-
-    // Display due date and time if available
-    const dueInfo = (dueDate || dueTime) ? 
-        `<small>Due: ${dueDate} ${dueTime}</small>` : '';
-
-    li.innerHTML = `
-        <input type="checkbox" ${completed ? 'checked' : ''}>
-        <span>${text}</span>
-        ${dueInfo}
-        <button class="delete-btn">&times;</button>
-    `;
-
-    // Toggle complete
-    li.querySelector('input').addEventListener('change', (e) => {
-        li.classList.toggle('completed');
-        // If completed, update dateCreated/dueDate in storage to mark it as completed task
-        saveTasks(); 
-    });
-
-    // Delete task
-    li.querySelector('.delete-btn').addEventListener('click', () => {
-        // Save to history before removing
-        const taskData = {
-            id: li.dataset.id,
-            text: li.querySelector('span').textContent,
-            completed: li.classList.contains('completed'),
-            dueDate: li.dataset.dueDate,
-            dueTime: li.dataset.dueTime,
-            dateCreated: li.dataset.dateCreated
-        };
-        saveDeletedTask(taskData);
-        
-        li.remove();
-        saveTasks();
-    });
-
-    taskList.appendChild(li);
+/* Tabs */
+.app-tabs{
+  display:flex;
+  gap:8px;
+  background:rgba(255,255,255,0.12);
+  padding:8px;
+  border-radius:10px;
+  align-items:center;
+}
+.tab{
+  flex:1;
+  padding:10px 14px;
+  border-radius:8px;
+  border:none;
+  background:transparent;
+  color:#e6eefc;
+  font-weight:600;
+  cursor:pointer;
+}
+.btn-active, .tab.btn-active{
+  background:var(--card);
+  color:var(--bg-dark);
+  box-shadow:var(--shadow);
 }
 
-// Add new task
-function addTask() {
-    const text = taskInput.value.trim();
-    const dueDate = dueDateInput.value;
-    const dueTime = dueTimeInput.value;
+/* Section content (card) */
+.tab-content{
+  display:none;
+  background:var(--card);
+  border-radius:12px;
+  padding:18px;
+  box-shadow:var(--shadow);
+}
+.tab-content.active{display:block}
 
-    if (!text) return;
-
-    const newTask = {
-        id: Date.now().toString(),
-        text: text,
-        completed: false,
-        dueDate: dueDate,
-        dueTime: dueTime,
-        dateCreated: new Date().toISOString()
-    };
-
-    addTaskToDOM(newTask);
-    saveTasks();
-    
-    // Clear inputs
-    taskInput.value = '';
-    dueDateInput.value = '';
-    dueTimeInput.value = '';
+/* Header inside section */
+.section-heading{
+  margin:0 0 14px;
+  font-size:1.25rem;
+  color:#fff;
+  background:linear-gradient(90deg,var(--accent),#6e56d6);
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
 }
 
-// --- CALENDAR LOGIC ---
-
-function renderCalendar() {
-    calendarGrid.innerHTML = '';
-    const date = new Date(currentCalendarDate);
-    const year = date.getFullYear();
-    const month = date.getMonth();
-
-    currentMonthYear.textContent = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-
-    const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0 for Sunday
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    daysOfWeek.forEach(day => {
-        const dayLabel = document.createElement('div');
-        dayLabel.textContent = day;
-        dayLabel.classList.add('day-label');
-        calendarGrid.appendChild(dayLabel);
-    });
-
-    // Add empty cells for previous month's days
-    for (let i = 0; i < firstDayOfMonth; i++) {
-        calendarGrid.appendChild(document.createElement('div'));
-    }
-
-    // Add actual days
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayEl = document.createElement('div');
-        dayEl.textContent = day;
-        dayEl.dataset.date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        
-        // Check for tasks on this date
-        const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-        const tasksOnDate = tasks.filter(task => task.dueDate === dayEl.dataset.date);
-
-        if (tasksOnDate.length > 0) {
-            dayEl.classList.add('has-task');
-        }
-
-        calendarGrid.appendChild(dayEl);
-    }
+/* Input panel */
+.input-panel{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:12px;
+  border-radius:10px;
+  background:var(--panel);
+  margin-bottom:10px;
+  flex-wrap:wrap;
 }
-
-function changeMonth(delta) {
-    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
-    renderCalendar();
+.input-panel .col{flex:1;min-width:220px}
+.input-panel .smalls{display:flex;gap:10px;flex-wrap:wrap}
+.input-panel label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:6px}
+.input-panel input[type="text"], .input-panel input[type="date"], .input-panel input[type="time"], .input-panel input[type="month"], .input-panel textarea, .input-panel select{
+  padding:10px 12px;border-radius:10px;border:1px solid #e6eaf8;background:#fff;outline:none;font-size:14px;
 }
+.input-panel textarea{resize:vertical}
 
-// --- HISTORY LOGIC ---
+/* actions */
+.actions{display:flex;gap:10px;align-items:center}
+.primary{background:var(--accent);color:#fff;padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+.primary:hover{background:#3a57d8}
+.muted{background:transparent;border:1px solid rgba(0,0,0,0.06);padding:8px 12px;border-radius:8px;cursor:pointer}
 
-function renderHistory(filter = 'pending') {
-    historyList.innerHTML = '';
-    let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    let itemsToShow = [];
-
-    if (filter === 'pending') {
-        itemsToShow = tasks.filter(task => !task.completed);
-    } else if (filter === 'completed') {
-        itemsToShow = tasks.filter(task => task.completed);
-    } else if (filter === 'deleted') {
-        itemsToShow = deletedTasks;
-    }
-    
-    if (itemsToShow.length === 0) {
-        historyList.innerHTML = `<li class="task">No ${filter} tasks found.</li>`;
-        return;
-    }
-
-    itemsToShow.forEach(task => {
-        const li = document.createElement('li');
-        li.className = 'task history-item';
-        
-        let status = '';
-        if (task.dateDeleted) {
-            status = `<span style="color: red;">[DELETED]</span>`;
-        } else if (task.completed) {
-            status = `<span style="color: green;">[COMPLETED]</span>`;
-        } else {
-            status = `<span style="color: orange;">[PENDING]</span>`;
-        }
-
-        li.innerHTML = `
-            <span>${task.text}</span>
-            ${status}
-            <small>Created: ${new Date(task.dateCreated).toLocaleDateString()}</small>
-            <small>Due: ${task.dueDate} ${task.dueTime}</small>
-        `;
-        historyList.appendChild(li);
-    });
+/* Task list */
+.task-list-wrap{padding:10px 0}
+.task-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.task{
+  background:var(--card);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #eef2ff;
+  box-shadow:0 6px 20px rgba(9,30,66,0.04);
 }
+.task .left{display:flex;align-items:center;gap:12px;flex:1}
+.task .meta{display:flex;flex-direction:column;font-size:13px;color:var(--muted)}
+.task .title{font-weight:600}
+.task .small{font-size:12px;color:var(--muted)}
+.task .right{display:flex;align-items:center;gap:8px}
+.task input[type="checkbox"]{width:18px;height:18px}
 
-// --- REMINDER LOGIC (Basic implementation) ---
+/* state styles */
+.task.completed{opacity:0.75}
+.task.overdue{border:2px solid var(--danger)}
+.tag{padding:6px 8px;border-radius:8px;font-size:12px;color:#fff}
 
-function checkReminders() {
-    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    const now = new Date();
-    const todayDate = now.toISOString().split('T')[0];
-    const currentTime = now.toTimeString().split(' ')[0].substring(0, 5); // HH:MM
+/* calendar */
+.calendar-controls{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.month-nav{display:flex;align-items:center;gap:8px}
+.month-title{font-weight:700;color:#fff;padding:8px 12px;border-radius:8px;background:linear-gradient(90deg,var(--accent),#6e56d6)}
+.month-nav button{background:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer}
+.jump-controls{display:flex;gap:8px;align-items:center}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:transparent;border-radius:8px;padding:6px}
+.calendar-cell{background:rgba(255,255,255,0.95);padding:12px;border-radius:8px;min-height:80px;position:relative;cursor:pointer;border:1px solid #f2f6ff}
+.day-number{font-weight:700;margin-bottom:6px}
+.day-tasks-bullet{position:absolute;bottom:8px;left:8px;display:flex;gap:6px}
+.bullet{width:8px;height:8px;border-radius:50%}
 
-    tasks.forEach(task => {
-        // Simple reminder check: If due today and current time is past due time
-        if (task.dueDate === todayDate && task.dueTime === currentTime && !task.completed) {
-            alert(`REMINDER: Your task "${task.text}" is due now!`);
-        }
-    });
-    // For a real app, this would run periodically (e.g., every minute) using a server or background worker.
-    // Here, we just check on load.
+/* day tasks panel */
+.day-tasks{margin-top:12px;padding:12px;border-radius:10px;background:var(--card);box-shadow:var(--shadow)}
+.day-tasks.hidden{display:none}
+.day-tasks .small{font-size:13px;color:var(--muted)}
+
+/* history controls */
+.history-controls{display:flex;gap:8px;margin-bottom:10px}
+.filter{padding:8px 12px;border-radius:8px;border:none;background:#f6f7ff;cursor:pointer}
+.filter.active{background:var(--accent);color:#fff}
+
+/* footer */
+.main-footer{padding:12px 20px;background:#111827;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.main-footer .social a{color:#cbd5e1;margin-left:10px;text-decoration:none}
+
+/* small screens */
+@media (max-width:860px){
+  .header-inner{flex-direction:column;align-items:flex-start}
+  .nav ul{flex-wrap:wrap}
+  .input-panel{flex-direction:column}
+  .calendar-grid .calendar-cell{min-height:64px}
 }
-
-
-// --- EVENT LISTENERS ---
-
-// Add Task Listeners
-addBtn.addEventListener('click', addTask);
-taskInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') addTask();
-});
-
-// Tab Switching Logic
-document.querySelectorAll('.tab-button').forEach(button => {
-    button.addEventListener('click', () => {
-        const tabId = button.dataset.tab;
-        
-        // Deactivate all
-        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-        // Activate selected
-        button.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
-
-        // Special render functions for specific tabs
-        if (tabId === 'calendar') renderCalendar();
-        if (tabId === 'history') renderHistory(document.querySelector('.history-filters .active').dataset.filter);
-    });
-});
-
-// Calendar Listeners
-prevMonthBtn.addEventListener('click', () => changeMonth(-1));
-nextMonthBtn.addEventListener('click', () => changeMonth(1));
-
-// History Filter Listeners
-document.querySelectorAll('.filter-button').forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        renderHistory(button.dataset.filter);
-    });
-});
-
-
-// --- INITIALIZATION ---
-loadTasks();
-checkReminders(); // Run reminder check on app load
-taskInput.focus();
-renderCalendar(); // Render calendar on initial load (hidden until the tab is clicked)
