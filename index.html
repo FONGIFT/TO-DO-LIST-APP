@@ -4,24 +4,86 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My To-Do List</title>
+    <title>TaskMaster Pro | Full Web App</title>
     <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container">
-        <h1>My To-Do List</h1>
-
-        <div class="input-box">
-            <input type="text" id="taskInput" placeholder="Add a new task..." autofocus />
-            <button id="addBtn">Add</button>
+    <header class="main-header">
+        <div class="header-content">
+            <a href="#" class="logo">TaskMaster Pro</a>
+            <nav>
+                <ul>
+                    <li><a href="#" id="home-tab-link">Home</a></li>
+                    <li><a href="#" id="calendar-tab-link">Calendar</a></li>
+                    <li><a href="#" id="history-tab-link">History</a></li>
+                    <li><a href="#" class="cta-btn">Get Started</a></li>
+                </ul>
+            </nav>
         </div>
+    </header>
 
-        <ul id="taskList"></ul>
+    <main class="app-main">
+        <div class="container">
+            <div class="app-tabs">
+                <button class="tab-button active" data-tab="list">Task List</button>
+                <button class="tab-button" data-tab="calendar">Calendar View</button>
+                <button class="tab-button" data-tab="history">History</button>
+            </div>
+            
+            <div id="list" class="tab-content active">
+                <h1>My To-Do List</h1>
+                <div class="input-box">
+                    <input type="text" id="taskInput" placeholder="Add a new task..." autofocus />
+                    
+                    <div class="date-remind-inputs">
+                        <input type="date" id="dueDateInput" title="Due Date">
+                        <input type="time" id="dueTimeInput" title="Reminder Time">
+                    </div>
+                    
+                    <button id="addBtn">Add</button>
+                </div>
+                <ul id="taskList"></ul>
+                <p class="app-footer-note">Tasks are saved automatically via localStorage</p>
+            </div>
 
-        <p class="footer">Tasks are saved automatically</p>
-    </div>
+            <div id="calendar" class="tab-content">
+                <h1>Task Calendar</h1>
+                <div id="calendarView">
+                    <div class="calendar-header">
+                        <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                        <h2 id="currentMonthYear"></h2>
+                        <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                </div>
+                <div id="dateDetails"></div>
+            </div>
+
+            <div id="history" class="tab-content">
+                <h1>Task History</h1>
+                <div class="history-filters">
+                    <button class="filter-button active" data-filter="pending">Pending</button>
+                    <button class="filter-button" data-filter="completed">Completed</button>
+                    <button class="filter-button" data-filter="deleted">Deleted</button>
+                </div>
+                <ul id="historyList">
+                    </ul>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2024 TaskMaster Solutions. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
