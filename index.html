@@ -4,80 +4,94 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TaskMaster Pro | Full Web App</title>
+    <title>TaskMaster Pro | Productivity Suite</title>
+
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <!-- HEADER -->
     <header class="main-header">
         <div class="header-content">
-            <a href="#" class="logo">TaskMaster Pro</a>
+            <a href="#" class="logo">TaskMaster <span>Pro</span></a>
+
             <nav>
-                <ul>
-                    <li><a href="#" id="home-tab-link">Home</a></li>
-                    <li><a href="#" id="calendar-tab-link">Calendar</a></li>
-                    <li><a href="#" id="history-tab-link">History</a></li>
-                    <li><a href="#" class="cta-btn">Get Started</a></li>
+                <ul class="nav-links">
+                    <li><a class="nav-link" href="#">Home</a></li>
+                    <li><a class="nav-link" href="#" id="calendar-tab-link">Calendar</a></li>
+                    <li><a class="nav-link" href="#" id="history-tab-link">History</a></li>
+                    <li><a class="cta-btn" href="#">Get Started</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- MAIN APP -->
     <main class="app-main">
         <div class="container">
+            <!-- Tabs -->
             <div class="app-tabs">
                 <button class="tab-button active" data-tab="list">Task List</button>
-                <button class="tab-button" data-tab="calendar">Calendar View</button>
+                <button class="tab-button" data-tab="calendar">Calendar</button>
                 <button class="tab-button" data-tab="history">History</button>
             </div>
-            
+
+            <!-- Task List -->
             <div id="list" class="tab-content active">
-                <h1>My To-Do List</h1>
+                <h1>My Tasks</h1>
+
                 <div class="input-box">
                     <input type="text" id="taskInput" placeholder="Add a new task..." autofocus />
-                    
+
                     <div class="date-remind-inputs">
-                        <input type="date" id="dueDateInput" title="Due Date">
-                        <input type="time" id="dueTimeInput" title="Reminder Time">
+                        <input type="date" id="dueDateInput">
+                        <input type="time" id="dueTimeInput">
                     </div>
-                    
-                    <button id="addBtn">Add</button>
+
+                    <button id="addBtn" class="primary-btn">Add</button>
                 </div>
-                <ul id="taskList"></ul>
-                <p class="app-footer-note">Tasks are saved automatically via localStorage</p>
+
+                <ul id="taskList" class="task-list"></ul>
+
+                <p class="app-footer-note">Your tasks are saved automatically.</p>
             </div>
 
+            <!-- Calendar -->
             <div id="calendar" class="tab-content">
                 <h1>Task Calendar</h1>
+
                 <div id="calendarView">
                     <div class="calendar-header">
-                        <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                        <button id="prevMonth" class="circle-btn"><i class="fas fa-chevron-left"></i></button>
                         <h2 id="currentMonthYear"></h2>
-                        <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                        <button id="nextMonth" class="circle-btn"><i class="fas fa-chevron-right"></i></button>
                     </div>
+
                     <div id="calendarGrid" class="calendar-grid"></div>
                 </div>
-                <div id="dateDetails"></div>
             </div>
 
+            <!-- History -->
             <div id="history" class="tab-content">
                 <h1>Task History</h1>
+
                 <div class="history-filters">
                     <button class="filter-button active" data-filter="pending">Pending</button>
                     <button class="filter-button" data-filter="completed">Completed</button>
                     <button class="filter-button" data-filter="deleted">Deleted</button>
                 </div>
-                <ul id="historyList">
-                    </ul>
+
+                <ul id="historyList" class="history-list"></ul>
             </div>
-            
         </div>
     </main>
 
+    <!-- FOOTER -->
     <footer class="main-footer">
-        <p>&copy; 2024 TaskMaster Solutions. All rights reserved.</p>
+        <p>© 2024 TaskMaster Solutions</p>
+
         <div class="social-links">
             <a href="#"><i class="fab fa-facebook-f"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
