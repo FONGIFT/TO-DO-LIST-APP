@@ -1,3 +1,4 @@
+/* --- Global Styles --- */
 * {
     margin: 0;
     padding: 0;
@@ -6,18 +7,31 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    padding: 2rem;
     color: #333;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Header & Footer (Same as previous, omitted for brevity) --- */
+/* (Ensure your full header and footer styles are kept here) */
+
+/* --- Main App Content Styling (Same as previous, ensuring gradient is on .app-main) --- */
+.app-main {
+    flex-grow: 1;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container {
-    max-width: 500px;
-    margin: 0 auto;
+    max-width: 700px; /* Increased width to accommodate the calendar/history */
+    width: 90%;
     background: white;
     border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     overflow: hidden;
 }
 
@@ -30,102 +44,156 @@ h1 {
     margin: 0;
 }
 
+/* --- App Tabs Styling --- */
+.app-tabs {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-button {
+    flex-grow: 1;
+    padding: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #555;
+    transition: all 0.2s;
+}
+
+.tab-button:hover {
+    background: #f0f0f0;
+}
+
+.tab-button.active {
+    color: #4a6cf7;
+    border-bottom: 3px solid #4a6cf7;
+    background: #fff;
+}
+
+.tab-content {
+    padding: 0;
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* --- Input Area with Date/Time --- */
 .input-box {
     display: flex;
+    flex-wrap: wrap; /* Allows inputs to wrap on smaller screens */
     padding: 1rem;
     border-bottom: 1px solid #eee;
     background: #f8f9ff;
+    gap: 0.5rem;
 }
 
 #taskInput {
-    flex: 1;
+    flex: 1 1 100%; /* Takes full width first */
+}
+
+.date-remind-inputs {
+    display: flex;
+    gap: 0.5rem;
+    flex: 1 1 50%; /* Takes half width */
+}
+
+#dueDateInput, #dueTimeInput {
     padding: 0.75rem 1rem;
     border: 2px solid #ddd;
     border-radius: 8px;
     font-size: 1rem;
     outline: none;
-    transition: border 0.2s;
-}
-
-#taskInput:focus {
-    border-color: #4a6cf7;
 }
 
 #addBtn {
-    margin-left: 0.5rem;
-    padding: 0 1.2rem;
+    /* Updated flex property to match layout */
+    flex: 0 1 auto; 
+    margin-left: 0;
+    /* ... existing button styles ... */
+}
+
+/* --- Calendar View Styling --- */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f0f0f0;
+}
+
+#calendarGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 days of the week */
+    gap: 1px;
+    background: #eee;
+}
+
+.calendar-grid > div {
+    background: white;
+    padding: 0.5rem;
+    text-align: center;
+    height: 60px;
+    cursor: pointer;
+    border: 1px solid #fff;
+    font-size: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.calendar-grid .day-label {
+    font-weight: 700;
     background: #4a6cf7;
     color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
+    height: auto;
+    cursor: default;
+}
+
+.calendar-grid .has-task {
+    border: 2px solid #ff5b5b; /* Highlight for days with tasks */
+}
+
+.calendar-grid .has-task::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: #ff5b5b;
+    border-radius: 50%;
+}
+
+/* --- History and Task List (Existing Task Styles Append Here) --- */
+/* ... existing styles for #taskList, .task, .task.completed ... */
+
+/* --- History Filters --- */
+.history-filters {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    gap: 0.5rem;
+}
+
+.filter-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    background: #fff;
     cursor: pointer;
-    transition: background 0.2s;
+    border-radius: 6px;
 }
 
-#addBtn:hover {
-    background: #3a5be0;
+.filter-button.active {
+    background: #4a6cf7;
+    color: white;
+    border-color: #4a6cf7;
 }
 
-#taskList {
+#historyList {
     list-style: none;
     padding: 0;
-}
-
-.task {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-    transition: background 0.2s;
-}
-
-.task:hover {
-    background: #f8f9ff;
-}
-
-.task.completed {
-    opacity: 0.6;
-    text-decoration: line-through;
-    color: #888;
-}
-
-.task input[type="checkbox"] {
-    margin-right: 1rem;
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-}
-
-.task span {
-    flex: 1;
-    font-size: 1rem;
-}
-
-.task button {
-    background: #ff5b5b;
-    color: white;
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.task:hover button {
-    opacity: 1;
-}
-
-.footer {
-    text-align: center;
-    padding: 1rem;
-    color: #888;
-    font-size: 0.9rem;
-    background: #f8f9ff;
 }
