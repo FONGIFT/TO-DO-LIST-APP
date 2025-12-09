@@ -1,145 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TaskMaster Pro — To-Do + Calendar + Reminders</title>
-
-  <!-- Fonts + Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-  <link rel="stylesheet" href="./style.css?v=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MySQL Ready To-Do App</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="main-header">
-    <div class="header-inner">
-      <a class="logo" href="#">TaskMaster <span>Pro</span></a>
-      <nav class="nav">
-        <ul>
-          <li><button class="nav-link" data-target="list">Home</button></li>
-          <li><button class="nav-link" data-target="calendar">Calendar</button></li>
-          <li><button class="nav-link" data-target="history">History</button></li>
-          <li><a class="cta" href="#" id="getStarted">Get Started</a></li>
-        </ul>
+
+  <!-- --- Authentication Pages --- -->
+  <div id="auth-container" class="page active">
+    <section id="login-page" class="auth-form visible">
+      <h2>Login</h2>
+      <input type="email" id="login-email" placeholder="Email" required>
+      <input type="password" id="login-password" placeholder="Password" required>
+      <button onclick="handleLogin()">Log In</button>
+      <p>Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+      <p class="error-message" id="login-error"></p>
+    </section>
+
+    <section id="signup-page" class="auth-form hidden">
+      <h2>Sign Up</h2>
+      <input type="email" id="signup-email" placeholder="Email" required>
+      <input type="password" id="signup-password" placeholder="Password (Min 6 chars)" required>
+      <button onclick="handleSignup()">Sign Up</button>
+      <p>Already have an account? <a href="#" onclick="showLogin()">Log In</a></p>
+      <p class="error-message" id="signup-error"></p>
+    </section>
+  </div>
+
+  <!-- --- Main App Pages --- -->
+  <div id="app-container" class="page hidden">
+    <header>
+      <nav>
+        <div class="nav-left">
+          <button onclick="showPage('home')">🏠 Home</button>
+          <button onclick="showPage('tasks')">➕ Get Started</button>
+          <button onclick="showPage('history')">📜 History</button>
+        </div>
+        <div class="nav-right">
+          <span class="profile-icon">👤 <span id="user-email-display">Guest</span></span>
+          <button onclick="logout()">Logout</button>
+        </div>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="app-main">
-    <div class="container">
+    <main>
+      <p class="api-error-message" id="api-global-error"></p>
 
-      <!-- TABS -->
-      <div class="app-tabs">
-        <button class="tab btn-active" data-tab="list">Task List</button>
-        <button class="tab" data-tab="calendar">Calendar</button>
-        <button class="tab" data-tab="history">History</button>
-      </div>
-
-      <!-- TASK LIST -->
-      <section id="list" class="tab-content active">
-        <h2 class="section-heading">My Tasks</h2>
-
-        <form id="taskForm" class="input-panel" autocomplete="off">
-          <div class="col">
-            <input id="taskTitle" type="text" placeholder="Task title (required)" required />
-            <textarea id="taskDesc" placeholder="Description (optional)" rows="2"></textarea>
-          </div>
-
-          <div class="col smalls">
-            <label>
-              Due date
-              <input id="dueDate" type="date" />
-            </label>
-
-            <label>
-              Reminder time
-              <input id="remindTime" type="time" />
-            </label>
-
-            <label>
-              Reminder start
-              <input id="remindStart" type="date" />
-            </label>
-
-            <label>
-              Frequency
-              <select id="remindFreq">
-                <option value="none">None</option>
-                <option value="once">Once</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="col actions">
-            <button id="addTaskBtn" class="primary" type="submit"><i class="fa fa-plus"></i> Add Task</button>
-            <button id="clearFormBtn" type="button" class="muted">Clear</button>
-          </div>
-        </form>
-
-        <div class="task-list-wrap">
-          <ul id="taskList" class="task-list" aria-live="polite"></ul>
-        </div>
-
-        <p class="note">Tasks are saved locally in your browser. Turn on notifications for reminders.</p>
+      <!-- Home Page -->
+      <section id="home-page" class="app-section active-section">
+        <h1>Welcome Back!</h1>
+        <p>Use the links above to manage your tasks, which are securely stored in MySQL (once backend is connected).</p>
+        <a href="#" class="get-started-link" onclick="showPage('tasks')">Get Started &rarr;</a>
       </section>
 
-      <!-- CALENDAR -->
-      <section id="calendar" class="tab-content">
-        <h2 class="section-heading">Calendar</h2>
-
-        <div class="calendar-controls">
-          <div class="month-nav">
-            <button id="prevMonth"><i class="fa fa-chevron-left"></i></button>
-            <div id="currentMonthYear" class="month-title"></div>
-            <button id="nextMonth"><i class="fa fa-chevron-right"></i></button>
-          </div>
-
-          <div class="jump-controls">
-            <label>Jump to month:
-              <input id="jumpMonth" type="month" />
-            </label>
-            <button id="todayBtn" class="muted">Today</button>
-          </div>
+      <!-- Get Started / Tasks Page -->
+      <section id="tasks-page" class="app-section hidden-section">
+        <h2>📝 Your Tasks</h2>
+        <div class="add-task-form">
+          <input type="text" id="new-task-input" placeholder="Enter new task..." required>
+          <button onclick="addTask()">Add Task</button>
         </div>
-
-        <div id="calendarGrid" class="calendar-grid"></div>
-
-        <div id="dayTasks" class="day-tasks hidden">
-          <h3 id="dayTasksTitle"></h3>
-          <ul id="dayTaskList" class="task-list small"></ul>
-          <button id="closeDayTasks" class="muted">Close</button>
-        </div>
+        <ul id="in-progress-list" class="task-list">
+          <p class="loading-message">Loading tasks...</p>
+        </ul>
       </section>
 
-      <!-- HISTORY -->
-      <section id="history" class="tab-content">
-        <h2 class="section-heading">History</h2>
+      <!-- History Page -->
+      <section id="history-page" class="app-section hidden-section">
+        <h2>📜 Task History</h2>
+        <h3>✅ Completed Tasks</h3>
+        <ul id="completed-list" class="task-list history-list"></ul>
 
-        <div class="history-controls">
-          <button class="filter active" data-filter="pending">Pending</button>
-          <button class="filter" data-filter="completed">Completed</button>
-          <button class="filter" data-filter="deleted">Deleted</button>
-        </div>
-
-        <ul id="historyList" class="task-list"></ul>
+        <h3>🗑️ Deleted Tasks</h3>
+        <ul id="deleted-list" class="task-list history-list"></ul>
       </section>
+    </main>
+  </div>
 
-    </div>
-  </main>
-
-  <footer class="main-footer">
-    <div>© <span id="year"></span> TaskMaster Solutions</div>
-    <div class="social">
-      <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-      <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-      <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-    </div>
-  </footer>
-
-  <script src="./script.js?v=1"></script>
+  <script src="script.js"></script>
 </body>
 </html>
